@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+        insert into tb_sample(id, password, username, company)
+        values('user01', 'pass01', 'name01', 'company01');
+
+        insert into tb_sample(id, password, username, company)
+        values('user02', 'pass02', 'name02', 'company02');
+
+        select * from tb_sample;
+
+        select seq, id, password, username, company, regdate, moddate
+        from tb_sample
+        order by seq;
+
+        select seq, id, password, username, company, regdate, moddate
+        from tb_sample
+        where id = 'user01';
+
+        update tb_sample
+        set
+        password = 'newpass01',
+        username = 'newuser01',
+        company = 'newcompany'
+        where id = 'user01';
+
+        delete from tb_sample
+        where id = 'user01';
+
+        $는 sql inject에 취약
+-->
+<mapper namespace="com.uracle.sample.api.sample.SampleMapper">
+    <insert id="insertSample" parameterType="com.uracle.sample.api.sample.Sample">
+        INSERT INTO tb_sample(id, password, username, company)
+        VALUES (#{id}, #{password}, #{username}, #{company});
+    </insert>
+
+    <select id="selectSamples" resultType="com.uracle.sample.api.sample.Sample">
+        SELECT seq, id, password, username, company, regdate, moddate
+        FROM tb_sample
+        ORDER BY seq;
+    </select>
+
+    <select id="selectSampleById" resultType="com.uracle.sample.api.sample.Sample">
+        SELECT seq, id, password, username, company, regdate, moddate
+        FROM tb_sample
+        WHERE id = #{id};
+    </select>
+
+    <update id="updateSample" parameterType="com.uracle.sample.api.sample.Sample">
+        UPDATE tb_sample
+        SET
+        <if test="password != null and password != ''">
+            password = #{password},
+        </if>
+        <if test="username != null and username != ''">
+            username = #{username},
+        </if>
+        <if test="company != null and company != ''">
+            company = #{company},
+        </if>
+        moddate = now()
+        where id = #{id};
+    </update>
+
+    <delete id="deleteSample" parameterType="com.uracle.sample.api.sample.Sample">
+        DELETE
+        FROM tb_sample
+        where id = #{id}
+    </delete>
+</mapper>
